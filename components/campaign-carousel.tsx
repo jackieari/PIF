@@ -3,9 +3,11 @@
 import { useState, useRef, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Vote, ChevronLeft, ChevronRight } from "lucide-react"
+import Link from 'next/link'
 
 const campaigns = [
   {
+    id: "waterbridge",
     name: "WaterBridge Foundation",
     category: "Clean Water",
     description: "Building sustainable water infrastructure in underserved rural areas across developing regions.",
@@ -124,20 +126,24 @@ export default function CampaignCarousel() {
               key={index}
               className="flex-shrink-0 w-[90%] sm:w-[45%] md:w-[30%] bg-white rounded-xl border border-gray-200 p-6 shadow-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
             >
-              <div className="w-full h-48 bg-gray-100 rounded-lg mb-4 overflow-hidden">
-                <img
-                  src={campaign.image || "/placeholder.svg"}
-                  alt={campaign.alt}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <div className="flex items-start gap-4 mb-4">
-                <div className="flex-1">
-                  <h3 className="font-semibold text-gray-900">{campaign.name}</h3>
-                  <p className="text-sm text-gray-500">{campaign.category}</p>
+              <Link href={`/campaign/${campaign.id}`} className="block">
+                <div className="w-full h-48 bg-gray-100 rounded-lg mb-4 overflow-hidden">
+                  <img
+                    src={campaign.image || "/placeholder.svg"}
+                    alt={campaign.alt}
+                    className="w-full h-full object-cover"
+                  />
                 </div>
-              </div>
-              <p className="text-gray-600 text-sm mb-4 h-16">{campaign.description}</p>
+                <div className="flex items-start gap-4 mb-4">
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-gray-900 hover:text-emerald-600 transition-colors">
+                      {campaign.name}
+                    </h3>
+                    <p className="text-sm text-gray-500">{campaign.category}</p>
+                  </div>
+                </div>
+                <p className="text-gray-600 text-sm mb-4 h-16">{campaign.description}</p>
+              </Link>
               <div className="mb-4">
                 <div className="flex justify-between items-center mb-2">
                   <span className="text-sm font-medium text-gray-700">Current Support</span>
