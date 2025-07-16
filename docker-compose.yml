@@ -5,7 +5,7 @@ services:
     command: --default-authentication-plugin=mysql_native_password
     restart: unless-stopped
     
-      # ── health-check ───────────────────────────────────────
+    # ── health-check ───────────────────────────────────────
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-prootpass"]
       interval: 10s
