@@ -1,9 +1,10 @@
-"use client"
+'use client';
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Wallet, ArrowRight, Shield, Users, Heart } from "lucide-react"
-import { useRouter } from "next/navigation"
+import { useState } from "react";
+import { useRouter } from 'next/navigation';
+import { Button } from "@/components/ui/button";
+import { Wallet, ArrowRight, Shield, Users, Heart } from "lucide-react";
+
 
 // Mock wallet connection - in real app this would use RainbowKit/wagmi
 const mockWalletConnect = async () => {
