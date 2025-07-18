@@ -1,182 +1,166 @@
-"use client"
+'use client';
 
-import type React from "react"
-import { useState } from "react"
-import { useRouter } from "next/navigation"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { useToast } from "@/hooks/use-toast"
-import { Zap, ArrowLeft } from "lucide-react"
-import Link from "next/link"
+import { useState } from "react";
+import { useRouter } from 'next/navigation';
+import { Button } from "@/components/ui/button";
+import { Wallet, ArrowRight, Shield, Users, Heart } from "lucide-react";
+
+
+// Mock wallet connection - in real app this would use RainbowKit/wagmi
+const mockWalletConnect = async () => {
+  // Simulate wallet connection delay
+  await new Promise((resolve) => setTimeout(resolve, 2000))
+
+  // Mock wallet addresses for demo
+  const mockAddresses = [
+    "0x742d35Cc6634C0532925a3b8D4C9db96590b5c8e",
+    "0x8ba1f109551bD432803012645Hac136c22C501e",
+    "0x1234567890123456789012345678901234567890",
+  ]
+
+  return mockAddresses[Math.floor(Math.random() * mockAddresses.length)]
+}
+
+// Mock function to check if user exists
+const checkUserExists = async (address: string) => {
+  // Simulate API call
+  await new Promise((resolve) => setTimeout(resolve, 500))
+
+  // For demo, randomly decide if user exists
+  return Math.random() > 0.7 // 30% chance user already exists
+}
 
 export default function AuthPage() {
-  const [isLoading, setIsLoading] = useState(false)
+  const [isConnecting, setIsConnecting] = useState(false)
+  const [error, setError] = useState("")
   const router = useRouter()
-  const { toast } = useToast()
 
-  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    setIsLoading(true)
-
-    const formData = new FormData(e.currentTarget)
-    const email = formData.get("email") as string
-    const password = formData.get("password") as string
-
+  const handleConnectWallet = async () => {
     try {
-      const res = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      })
+      setIsConnecting(true)
+      setError("")
 
-      if (!res.ok) throw new Error("Login failed")
+      // Step 1: Connect wallet
+      const walletAddress = await mockWalletConnect()
 
-      toast({
-        title: "Welcome back!",
-        description: "You've been successfully logged in.",
-      })
+      // Step 2: Check if user exists
+      const userExists = await checkUserExists(walletAddress)
 
-      router.push("/campaigns")
-    } catch {
-      toast({
-        title: "Login failed",
-        description: "Please check your credentials and try again.",
-        variant: "destructive",
-      })
+      if (userExists) {
+        // User exists, redirect to dashboard
+        router.push("/dashboard")
+      } else {
+        // New user, redirect to onboarding with wallet address
+        router.push(`/onboarding?address=${walletAddress}`)
+      }
+    } catch (err) {
+      setError("Failed to connect wallet. Please try again.")
     } finally {
-      setIsLoading(false)
-    }
-  }
-
-  const handleSignup = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    setIsLoading(true)
-
-    const formData = new FormData(e.currentTarget)
-    const email = formData.get("email") as string
-    const password = formData.get("password") as string
-    const name = formData.get("name") as string
-    const userType = formData.get("userType") as "student" | "brand"
-
-    try {
-      const res = await fetch("/api/auth/signup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password, name, userType }),
-      })
-
-      if (!res.ok) throw new Error("Signup failed")
-
-      toast({
-        title: "Account created!",
-        description: "Welcome to Viral! Let's get you started.",
-      })
-
-      router.push("/campaigns")
-    } catch {
-      toast({
-        title: "Signup failed",
-        description: "Please try again with different details.",
-        variant: "destructive",
-      })
-    } finally {
-      setIsLoading(false)
+      setIsConnecting(false)
     }
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
+    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-emerald-50 flex items-center justify-center p-6">
+      {/* Background decorations */}
+      <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+        <div className="absolute top-[-10rem] left-[-25rem] w-[56.25rem] h-[56.25rem] bg-emerald-200/20 rounded-full filter blur-3xl" />
+        <div className="absolute bottom-[-10rem] right-[-25rem] w-[50rem] h-[50rem] bg-emerald-200/15 rounded-full filter blur-3xl" />
+      </div>
+
+      <div className="w-full max-w-md relative z-10">
+        {/* Header */}
         <div className="text-center mb-8">
-          <Link href="/" className="inline-flex items-center text-sm text-gray-600 hover:text-gray-900 mb-4">
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to home
-          </Link>
-          <div className="flex items-center justify-center space-x-2 mb-4">
-            <Zap className="h-8 w-8 text-blue-600" />
-            <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              Viral
-            </span>
+          <div className="flex items-center justify-center gap-3 mb-6">
+            <div className="w-12 h-12 bg-emerald-500 rounded-xl flex items-center justify-center">
+              <span className="text-white font-bold text-xl">P</span>
+            </div>
+            <span className="font-bold text-2xl text-gray-900">PIF Token</span>
           </div>
-          <h1 className="text-2xl font-bold text-gray-900">Join the Platform</h1>
-          <p className="text-gray-600">Start your marketing journey today</p>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Welcome Back</h1>
+          <p className="text-gray-600">Connect your wallet to join the community</p>
         </div>
 
-        <Tabs defaultValue="login" className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="login">Sign In</TabsTrigger>
-            <TabsTrigger value="signup">Sign Up</TabsTrigger>
-          </TabsList>
+        {/* Main Card */}
+        <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-8">
+          {/* Connect Wallet Button */}
+          <Button
+            onClick={handleConnectWallet}
+            disabled={isConnecting}
+            className="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-4 text-lg font-medium mb-6 relative overflow-hidden"
+          >
+            {isConnecting ? (
+              <>
+                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-3"></div>
+                Connecting...
+              </>
+            ) : (
+              <>
+                <Wallet className="w-5 h-5 mr-3" />
+                Connect Wallet
+                <ArrowRight className="w-5 h-5 ml-3" />
+              </>
+            )}
+          </Button>
 
-          <TabsContent value="login">
-            <Card>
-              <CardHeader>
-                <CardTitle>Sign In</CardTitle>
-                <CardDescription>Welcome back! Enter your credentials to continue.</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <form onSubmit={handleLogin} className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="email">Email</Label>
-                    <Input id="email" name="email" type="email" placeholder="your@email.com" required />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="password">Password</Label>
-                    <Input id="password" name="password" type="password" placeholder="••••••••" required />
-                  </div>
-                  <Button type="submit" className="w-full" disabled={isLoading}>
-                    {isLoading ? "Signing in..." : "Sign In"}
-                  </Button>
-                </form>
-              </CardContent>
-            </Card>
-          </TabsContent>
+          {error && (
+            <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+              <p className="text-red-600 text-sm">{error}</p>
+            </div>
+          )}
 
-          <TabsContent value="signup">
-            <Card>
-              <CardHeader>
-                <CardTitle>Create Account</CardTitle>
-                <CardDescription>Join thousands of students and brands on Viral.</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <form onSubmit={handleSignup} className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="name">Full Name</Label>
-                    <Input id="name" name="name" type="text" placeholder="John Doe" required />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="email">Email</Label>
-                    <Input id="email" name="email" type="email" placeholder="your@email.com" required />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="password">Password</Label>
-                    <Input id="password" name="password" type="password" placeholder="••••••••" required />
-                  </div>
-                  <div className="space-y-3">
-                    <Label>I am a...</Label>
-                    <RadioGroup name="userType" defaultValue="student" className="flex space-x-6">
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="student" id="student" />
-                        <Label htmlFor="student">Student</Label>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="brand" id="brand" />
-                        <Label htmlFor="brand">Brand</Label>
-                      </div>
-                    </RadioGroup>
-                  </div>
-                  <Button type="submit" className="w-full" disabled={isLoading}>
-                    {isLoading ? "Creating account..." : "Create Account"}
-                  </Button>
-                </form>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
+          {/* Supported Wallets */}
+          <div className="text-center mb-6">
+            <p className="text-sm text-gray-500 mb-4">Supported wallets</p>
+            <div className="flex justify-center gap-4">
+              <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
+                <img src="/placeholder.svg?height=24&width=24&text=MM" alt="MetaMask" className="w-6 h-6" />
+              </div>
+              <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
+                <img src="/placeholder.svg?height=24&width=24&text=WC" alt="WalletConnect" className="w-6 h-6" />
+              </div>
+              <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
+                <img src="/placeholder.svg?height=24&width=24&text=CB" alt="Coinbase" className="w-6 h-6" />
+              </div>
+            </div>
+          </div>
+
+          {/* Features */}
+          <div className="space-y-4 pt-6 border-t border-gray-100">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center">
+                <Shield className="w-4 h-4 text-emerald-600" />
+              </div>
+              <span className="text-sm text-gray-600">Secure wallet-based authentication</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center">
+                <Users className="w-4 h-4 text-emerald-600" />
+              </div>
+              <span className="text-sm text-gray-600">Join 8,943+ token holders</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center">
+                <Heart className="w-4 h-4 text-emerald-600" />
+              </div>
+              <span className="text-sm text-gray-600">Vote on charitable campaigns</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className="text-center mt-8">
+          <p className="text-sm text-gray-500">
+            By connecting, you agree to our{" "}
+            <a href="#" className="text-emerald-600 hover:text-emerald-700">
+              Terms of Service
+            </a>{" "}
+            and{" "}
+            <a href="#" className="text-emerald-600 hover:text-emerald-700">
+              Privacy Policy
+            </a>
+          </p>
+        </div>
       </div>
     </div>
   )
