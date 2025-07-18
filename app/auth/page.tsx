@@ -1,80 +1,60 @@
-'use client';
+'use client'
 
-import { useState } from "react";
-import { useRouter } from 'next/navigation';
-import { Button } from "@/components/ui/button";
-import { Wallet, ArrowRight, Shield, Users, Heart } from "lucide-react";
-
-
-// Mock wallet connection - in real app this would use RainbowKit/wagmi
-const mockWalletConnect = async () => {
-  // Simulate wallet connection delay
-  await new Promise((resolve) => setTimeout(resolve, 2000))
-
-  // Mock wallet addresses for demo
-  const mockAddresses = [
-    "0x742d35Cc6634C0532925a3b8D4C9db96590b5c8e",
-    "0x8ba1f109551bD432803012645Hac136c22C501e",
-    "0x1234567890123456789012345678901234567890",
-  ]
-
-  return mockAddresses[Math.floor(Math.random() * mockAddresses.length)]
-}
-
-// Mock function to check if user exists
-const checkUserExists = async (address: string) => {
-  // Simulate API call
-  await new Promise((resolve) => setTimeout(resolve, 500))
-
-  // For demo, randomly decide if user exists
-  return Math.random() > 0.7 // 30% chance user already exists
-}
+import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { Button } from '@/components/ui/button'
+import { Wallet, ArrowRight, Shield, Users, Heart } from 'lucide-react'
+import { ConnectButton } from '@rainbow-me/rainbowkit'
+import { useAccount } from 'wagmi'
 
 export default function AuthPage() {
-  const [isConnecting, setIsConnecting] = useState(false)
-  const [error, setError] = useState("")
+  const [isChecking, setIsChecking] = useState(false)
+  const [error, setError] = useState('')
   const router = useRouter()
 
-  const handleConnectWallet = async () => {
+  const { address, isConnected } = useAccount()
+
+  const handleCheckWallet = async () => {
+    if (!isConnected || !address) {
+      setError('Please connect your wallet first.')
+      return
+    }
+
     try {
-      setIsConnecting(true);
-      setError('');
-  
-      // Step 1: Connect wallet (your existing mock function)
-      const walletAddress = await mockWalletConnect();
-  
-      // Step 2: Check if wallet address exists in database
+      setIsChecking(true)
+      setError('')
+
       const response = await fetch('/api/check-wallet', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ walletAddress }),
-      });
-  
-      const data = await response.json();
-  
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to check wallet');
-      }
-  
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ walletAddress: address }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) throw new Error(data.error || 'Failed to check wallet')
+
       if (data.exists) {
-        // User exists, redirect to dashboard
-        router.push('/dashboard');
+        router.push('/dashboard')
       } else {
-        // User doesn't exist, redirect to account creation
-        router.push(`/onboarding?address=${walletAddress}`);
+        router.push(`/onboarding?address=${address}`)
       }
-    } catch (err) {
-      setError(error.message || 'Failed to connect wallet. Please try again.');
+    } catch (err: any) {
+      setError(err.message || 'Wallet check failed.')
     } finally {
-      setIsConnecting(false);
+      setIsChecking(false)
     }
-  };
-  
+  }
+
+  useEffect(() => {
+    if (isConnected && address) {
+      handleCheckWallet()
+    }
+  }, [isConnected, address])
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-emerald-50 flex items-center justify-center p-6">
-      {/* Background decorations */}
+      {/* Background */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
         <div className="absolute top-[-10rem] left-[-25rem] w-[56.25rem] h-[56.25rem] bg-emerald-200/20 rounded-full filter blur-3xl" />
         <div className="absolute bottom-[-10rem] right-[-25rem] w-[50rem] h-[50rem] bg-emerald-200/15 rounded-full filter blur-3xl" />
@@ -95,25 +75,13 @@ export default function AuthPage() {
 
         {/* Main Card */}
         <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-8">
-          {/* Connect Wallet Button */}
-          <Button
-            onClick={handleConnectWallet}
-            disabled={isConnecting}
-            className="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-4 text-lg font-medium mb-6 relative overflow-hidden"
-          >
-            {isConnecting ? (
-              <>
-                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-3"></div>
-                Connecting...
-              </>
-            ) : (
-              <>
-                <Wallet className="w-5 h-5 mr-3" />
-                Connect Wallet
-                <ArrowRight className="w-5 h-5 ml-3" />
-              </>
-            )}
-          </Button>
+          <div className="mb-6">
+            <ConnectButton showBalance={false} />
+          </div>
+
+          {isChecking && (
+            <div className="text-center text-sm text-gray-500 mb-4">Checking wallet status...</div>
+          )}
 
           {error && (
             <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
@@ -163,11 +131,11 @@ export default function AuthPage() {
         {/* Footer */}
         <div className="text-center mt-8">
           <p className="text-sm text-gray-500">
-            By connecting, you agree to our{" "}
+            By connecting, you agree to our{' '}
             <a href="#" className="text-emerald-600 hover:text-emerald-700">
               Terms of Service
-            </a>{" "}
-            and{" "}
+            </a>{' '}
+            and{' '}
             <a href="#" className="text-emerald-600 hover:text-emerald-700">
               Privacy Policy
             </a>

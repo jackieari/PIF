@@ -1,31 +1,28 @@
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+// pages/api/check-wallet.js
+import { prisma } from '../../lib/prisma'     // or wherever your Prisma client is
 
 export default async function handler(req, res) {
+  // Accept only POST ─ return 405 for everything else
   if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
+    res.setHeader('Allow', ['POST'])
+    return res.status(405).json({ error: 'Method Not Allowed' })
   }
 
   try {
-    const { walletAddress } = req.body;
-
+    const { walletAddress } = req.body
     if (!walletAddress) {
-      return res.status(400).json({ error: 'Wallet address is required' });
+      return res.status(400).json({ error: 'walletAddress is required' })
     }
 
-    // Check if user exists with this wallet address
-    const existingUser = await prisma.user.findUnique({
-      where: { walletAddress: walletAddress.toLowerCase() },
-    });
+    // Look up the user (adjust the field name to match your schema)
+    const user = await prisma.user.findUnique({
+      where: { walletAddress },
+      select: { id: true },
+    })
 
-    if (existingUser) {
-      return res.status(200).json({ exists: true, user: existingUser });
-    } else {
-      return res.status(200).json({ exists: false, walletAddress: walletAddress.toLowerCase() });
-    }
-  } catch (error) {
-    console.error('Error checking wallet:', error);
-    return res.status(500).json({ error: 'Internal server error' });
+    return res.status(200).json({ exists: !!user })
+  } catch (err) {
+    console.error(err)
+    return res.status(500).json({ error: 'Server error' })
   }
 }
