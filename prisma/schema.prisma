@@ -24,3 +24,20 @@ model User {
   username      String?  @unique
   walletAddress String   @unique
 }
+
+
+model Campaign {
+  id               Int      @id @default(autoincrement())
+  name             String
+  category         String
+  shortDescription String
+  fullDescription  String
+  fundingGoal      Int
+  currentFunding   Int      @default(0)
+  support          String
+  votes            String
+  deadline         DateTime
+  location         String
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime
+}
