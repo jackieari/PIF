@@ -46,3 +46,4 @@ model Campaign {
   updatedAt        DateTime @updatedAt
 } 
 
+
