@@ -37,29 +37,41 @@ export default function AuthPage() {
 
   const handleConnectWallet = async () => {
     try {
-      setIsConnecting(true)
-      setError("")
-
-      // Step 1: Connect wallet
-      const walletAddress = await mockWalletConnect()
-
-      // Step 2: Check if user exists
-      const userExists = await checkUserExists(walletAddress)
-
-      if (userExists) {
+      setIsConnecting(true);
+      setError('');
+  
+      // Step 1: Connect wallet (your existing mock function)
+      const walletAddress = await mockWalletConnect();
+  
+      // Step 2: Check if wallet address exists in database
+      const response = await fetch('/api/check-wallet', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ walletAddress }),
+      });
+  
+      const data = await response.json();
+  
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to check wallet');
+      }
+  
+      if (data.exists) {
         // User exists, redirect to dashboard
-        router.push("/dashboard")
+        router.push('/dashboard');
       } else {
-        // New user, redirect to onboarding with wallet address
-        router.push(`/onboarding?address=${walletAddress}`)
+        // User doesn't exist, redirect to account creation
+        router.push(`/onboarding?address=${walletAddress}`);
       }
     } catch (err) {
-      setError("Failed to connect wallet. Please try again.")
+      setError(error.message || 'Failed to connect wallet. Please try again.');
     } finally {
-      setIsConnecting(false)
+      setIsConnecting(false);
     }
-  }
-
+  };
+  
   return (
     <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-emerald-50 flex items-center justify-center p-6">
       {/* Background decorations */}

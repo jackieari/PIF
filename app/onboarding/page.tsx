@@ -48,13 +48,18 @@ function OnboardingContent() {
     return Object.keys(e).length === 0;
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    const [loading, setLoading] = useState(false);
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
+    
+    if (!validate()) return;
+    
+    setIsSubmitting(true);
+    setErrors('');
   
     try {
-      const res = await fetch('http://localhost:3000/api/user/update-info', {
+      const walletAddress = searchParams.get('address');
+      
+      const response = await fetch('/api/create-user', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -68,20 +73,21 @@ function OnboardingContent() {
         }),
       });
   
-      if (res.ok) {
-        router.push('/dashboard');
-      } else {
-        const errorData = await res.json();
-        console.error('Failed to update user info:', errorData.error);
-        // Optional: display this error to the user via toast or form error message
+      const data = await response.json();
+  
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to create user');
       }
-    } catch (err) {
-      console.error('Unexpected error while updating user:', err);
-      // Optional: show a generic error to the user
+  
+      // Success! Redirect to dashboard
+      router.push('/dashboard');
+    } catch (error) {
+      setErrors(errors.message || 'Failed to create account. Please try again.');
     } finally {
-      setLoading(false);
+      setIsSubmitting(false);
     }
   };
+  
   
 
   const handleAvatarUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
