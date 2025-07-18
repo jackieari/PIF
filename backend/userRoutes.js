@@ -6,6 +6,7 @@ const prisma = require('./prisma');
 router.post('/check-wallet', async (req, res) => {
   const { walletAddress } = req.body;
   if (!walletAddress) return res.status(400).json({ error: 'walletAddress is required' });
+
   try {
     let user = await prisma.user.findUnique({ where: { walletAddress } });
     if (!user) {
@@ -29,6 +30,7 @@ router.post('/update-info', async (req, res) => {
   if (!walletAddress || !username || !firstName || !lastName || !email) {
     return res.status(400).json({ error: 'All fields are required' });
   }
+
   try {
     const user = await prisma.user.update({
       where: { walletAddress },
@@ -37,7 +39,7 @@ router.post('/update-info', async (req, res) => {
     res.json({ message: 'User info updated', user });
   } catch (err) {
     console.error(err);
-    if (err.code === 'P2002') { // Unique constraint error
+    if (err.code === 'P2002') {
       return res.status(409).json({ error: 'Username or email already exists' });
     }
     res.status(500).json({ error: 'Internal server error' });

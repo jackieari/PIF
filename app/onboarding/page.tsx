@@ -49,18 +49,40 @@ function OnboardingContent() {
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
+    const [loading, setLoading] = useState(false);
     e.preventDefault();
-    if (!validate()) return;
-    setIsSubmitting(true);
+    setLoading(true);
+  
     try {
-      await new Promise((r) => setTimeout(r, 2_000));
-      router.push('/dashboard');
+      const res = await fetch('http://localhost:3000/api/user/update-info', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          walletAddress,
+          username: formData.username,
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          email: formData.email,
+        }),
+      });
+  
+      if (res.ok) {
+        router.push('/dashboard');
+      } else {
+        const errorData = await res.json();
+        console.error('Failed to update user info:', errorData.error);
+        // Optional: display this error to the user via toast or form error message
+      }
     } catch (err) {
-      console.error('Failed to create user:', err);
+      console.error('Unexpected error while updating user:', err);
+      // Optional: show a generic error to the user
     } finally {
-      setIsSubmitting(false);
+      setLoading(false);
     }
   };
+  
 
   const handleAvatarUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
