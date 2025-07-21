@@ -18,6 +18,8 @@ RUN npx prisma generate
 COPY start.sh .
 RUN chmod +x start.sh
 
+COPY .env .env
+
 # ─── Build Next.js for production ──────────────────────────────
 RUN npm run build
 
