@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { PrismaClient } from "@prisma/client";
+import { verifyAdminToken } from "@/lib/auth"; // 🔐 Import token helper
 
 const prisma = new PrismaClient();
 
@@ -9,6 +10,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
+    // 🔐 Check and decode token
+    const token = req.headers.authorization?.split(" ")[1];
+    const decoded = verifyAdminToken(token || "");
+
+    if (!decoded || typeof decoded !== "object" || !("adminId" in decoded)) {
+      return res.status(401).json({ error: "Unauthorized: Invalid or missing token" });
+    }
+
     const {
       name,
       category,
@@ -42,6 +51,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         votes: String(votes),
         deadline: new Date(deadline),
         location,
+        // Optional: store which admin created it
+        // adminId: decoded.adminId,
       },
     });
 
