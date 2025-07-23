@@ -29,12 +29,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       votes,
       deadline,
       location,
+      adminId
     } = req.body;
 
     if (
       !name || !category || !shortDescription || !fullDescription ||
       fundingGoal === undefined || !support || votes === undefined ||
-      !deadline || !location
+      !deadline || !location || !adminId
     ) {
       return res.status(400).json({ error: "Missing required fields" });
     }
@@ -52,7 +53,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         deadline: new Date(deadline),
         location,
         // Optional: store which admin created it
-        // adminId: decoded.adminId,
+        adminId: decoded.adminId,
       },
     });
 
