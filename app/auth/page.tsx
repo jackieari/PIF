@@ -3,9 +3,9 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
-import { Wallet, ArrowRight, Shield, Users, Heart } from 'lucide-react'
-import { ConnectButton } from '@rainbow-me/rainbowkit'
+import { Shield, Users, Heart } from 'lucide-react'
 import { useAccount } from 'wagmi'
+import { usePrivy } from '@privy-io/react-auth'
 
 export default function AuthPage() {
   const [isChecking, setIsChecking] = useState(false)
@@ -13,6 +13,7 @@ export default function AuthPage() {
   const router = useRouter()
 
   const { address, isConnected } = useAccount()
+  const { ready, authenticated, login, logout } = usePrivy()
 
   const handleCheckWallet = async () => {
     if (!isConnected || !address) {
@@ -31,7 +32,6 @@ export default function AuthPage() {
       })
 
       const data = await response.json()
-
       if (!response.ok) throw new Error(data.error || 'Failed to check wallet')
 
       if (data.exists) {
@@ -50,6 +50,7 @@ export default function AuthPage() {
     if (isConnected && address) {
       handleCheckWallet()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isConnected, address])
 
   return (
@@ -69,18 +70,34 @@ export default function AuthPage() {
             </div>
             <span className="font-bold text-2xl text-gray-900">PIF Token</span>
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Welcome Back</h1>
-          <p className="text-gray-600">Connect your wallet to join the community</p>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            Welcome Back
+          </h1>
+          <p className="text-gray-600">
+            Connect your wallet to join the community
+          </p>
         </div>
 
         {/* Main Card */}
         <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-8">
-          <div className="mb-6">
-            <ConnectButton showBalance={false} />
+          <div className="mb-6 text-center">
+            {!ready ? (
+              <div className="text-gray-500">Loading...</div>
+            ) : authenticated ? (
+              <Button variant="outline" onClick={logout}>
+                Disconnect Wallet
+              </Button>
+            ) : (
+              <Button variant="emerald" onClick={login}>
+                Connect Wallet
+              </Button>
+            )}
           </div>
 
           {isChecking && (
-            <div className="text-center text-sm text-gray-500 mb-4">Checking wallet status...</div>
+            <div className="text-center text-sm text-gray-500 mb-4">
+              Checking wallet status...
+            </div>
           )}
 
           {error && (
@@ -111,19 +128,25 @@ export default function AuthPage() {
               <div className="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center">
                 <Shield className="w-4 h-4 text-emerald-600" />
               </div>
-              <span className="text-sm text-gray-600">Secure wallet-based authentication</span>
+              <span className="text-sm text-gray-600">
+                Secure wallet-based authentication
+              </span>
             </div>
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center">
                 <Users className="w-4 h-4 text-emerald-600" />
               </div>
-              <span className="text-sm text-gray-600">Join 8,943+ token holders</span>
+              <span className="text-sm text-gray-600">
+                Join 8,943+ token holders
+              </span>
             </div>
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center">
                 <Heart className="w-4 h-4 text-emerald-600" />
               </div>
-              <span className="text-sm text-gray-600">Vote on charitable campaigns</span>
+              <span className="text-sm text-gray-600">
+                Vote on charitable campaigns
+              </span>
             </div>
           </div>
         </div>

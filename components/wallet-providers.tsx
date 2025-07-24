@@ -1,21 +1,19 @@
-'use client'
+// wallet-providers.tsx
+import { PrivyProvider } from '@privy-io/react-auth';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { WagmiProvider } from '@privy-io/wagmi';
+import { wagmiConfig } from '../lib/walletConfig';
 
-import '@rainbow-me/rainbowkit/styles.css'
-import { WagmiProvider } from 'wagmi'
-import { RainbowKitProvider } from '@rainbow-me/rainbowkit'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { wagmiConfig } from '@/lib/walletConfig'
+const queryClient = new QueryClient();
 
-const queryClient = new QueryClient()
-
-export function WalletProviders({ children }: { children: React.ReactNode }) {
+export default function WalletProviders({ children }) {
   return (
-    <WagmiProvider config={wagmiConfig}>
+    <PrivyProvider appId="YOUR_PRIVY_APP_ID">
       <QueryClientProvider client={queryClient}>
-        <RainbowKitProvider>
+        <WagmiProvider config={wagmiConfig}>
           {children}
-        </RainbowKitProvider>
+        </WagmiProvider>
       </QueryClientProvider>
-    </WagmiProvider>
-  )
+    </PrivyProvider>
+  );
 }

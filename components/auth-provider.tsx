@@ -1,9 +1,8 @@
 "use client"
 
-import type React from "react"
+import React, { createContext, useContext, useEffect, useState, ReactNode } from "react"
 
-import { createContext, useContext, useEffect, useState } from "react"
-
+// Type for the user object
 type User = {
   id: string
   email: string
@@ -12,22 +11,33 @@ type User = {
   avatar_url?: string
 }
 
+// Type for the auth context
 type AuthContextType = {
   user: User | null
   login: (email: string, password: string) => Promise<void>
-  signup: (email: string, password: string, name: string, userType: "student" | "brand") => Promise<void>
+  signup: (
+    email: string,
+    password: string,
+    name: string,
+    userType: "student" | "brand"
+  ) => Promise<void>
   logout: () => void
   loading: boolean
 }
 
+// Create the context
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
+// Explicitly type props
+type AuthProviderProps = {
+  children: ReactNode
+}
+
+export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // Check for existing session
     const savedUser = localStorage.getItem("viral_user")
     if (savedUser) {
       setUser(JSON.parse(savedUser))
@@ -36,7 +46,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [])
 
   const login = async (email: string, password: string) => {
-    // Mock login - in real app, this would call your auth API
+    // Simulate login
     const mockUser: User = {
       id: "1",
       email,
@@ -47,8 +57,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem("viral_user", JSON.stringify(mockUser))
   }
 
-  const signup = async (email: string, password: string, name: string, userType: "student" | "brand") => {
-    // Mock signup - in real app, this would call your auth API
+  const signup = async (
+    email: string,
+    password: string,
+    name: string,
+    userType: "student" | "brand"
+  ) => {
     const mockUser: User = {
       id: Math.random().toString(36).substr(2, 9),
       email,
@@ -64,9 +78,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     localStorage.removeItem("viral_user")
   }
 
-  return <AuthContext.Provider value={{ user, login, signup, logout, loading }}>{children}</AuthContext.Provider>
+  return (
+    <AuthContext.Provider value={{ user, login, signup, logout, loading }}>
+      {children}
+    </AuthContext.Provider>
+  )
 }
 
+// Hook to access auth context
 export function useAuth() {
   const context = useContext(AuthContext)
   if (context === undefined) {

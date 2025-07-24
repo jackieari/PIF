@@ -1,29 +1,33 @@
 # ─── Base image ────────────────────────────────────────────────
-FROM node:18-alpine
+FROM node:20-alpine
 
-# ─── Working dir ───────────────────────────────────────────────
+# ─── Add dependencies required for native module builds ────────
+RUN apk add --no-cache python3 make g++
+
+# ─── Set working directory ─────────────────────────────────────
 WORKDIR /app
 
-# ─── Install deps first (cache layer) ──────────────────────────
+# ─── Install dependencies (cached layer) ───────────────────────
 COPY package*.json ./
 RUN npm install
 
-# ─── Copy entire project (incl. prisma/) ───────────────────────
+# ─── Copy remaining project files ──────────────────────────────
 COPY . .
+
+# ─── Copy environment variables ────────────────────────────────
+COPY .env .env
 
 # ─── Generate Prisma client ────────────────────────────────────
 RUN npx prisma generate
 
-# ─── Copy the startup script & make it executable ──────────────
-COPY start.sh .
+# ─── Make startup script executable ────────────────────────────
 RUN chmod +x start.sh
-
-COPY .env .env
 
 # ─── Build Next.js for production ──────────────────────────────
 RUN npm run build
 
+# ─── Expose port ───────────────────────────────────────────────
 EXPOSE 3000
 
-# ─── Container entrypoint ──────────────────────────────────────
+# ─── Start the app ─────────────────────────────────────────────
 CMD ["./start.sh"]
