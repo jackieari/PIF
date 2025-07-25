@@ -53,7 +53,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         deadline: new Date(deadline),
         location,
         // Optional: store which admin created it
-        adminId: decoded.adminId,
+        adminId
       },
     });
 
