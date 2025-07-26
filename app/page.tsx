@@ -200,8 +200,8 @@ export default function LandingPage() {
               Ready to make an impact?
             </h2>
             <div className="mt-10 flex items-center justify-center gap-x-6">
-              <Button className="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 text-base font-medium">
-                Become a Partner
+              <Button className="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 text-base font-medium" asChild>
+                <a href="/partner/apply">Become a Partner</a>
               </Button>
               <a href="#" className="text-sm font-semibold leading-6 text-white">
                 Learn more <span aria-hidden="true">→</span>
@@ -288,12 +288,12 @@ export default function LandingPage() {
                 <h4 className="font-semibold text-gray-900 mb-6">Partners</h4>
                 <ul className="space-y-4 text-gray-600">
                   <li>
-                    <a href="#" className="hover:text-gray-900">
+                    <a href="/partner/apply" className="hover:text-gray-900">
                       Become a Partner
                     </a>
                   </li>
                   <li>
-                    <a href="#" className="hover:text-gray-900">
+                    <a href="/partner/apply" className="hover:text-gray-900">
                       Submit Proposal
                     </a>
                   </li>
