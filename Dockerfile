@@ -1,6 +1,8 @@
 # ─── Base image ────────────────────────────────────────────────
 FROM node:18-alpine
 
+RUN apk add --no-cache python3 make g++ && ln -sf python3 /usr/bin/python
+
 # ─── Working dir ───────────────────────────────────────────────
 WORKDIR /app
 

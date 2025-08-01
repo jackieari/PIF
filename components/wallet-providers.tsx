@@ -1,21 +1,27 @@
 'use client'
 
-import '@rainbow-me/rainbowkit/styles.css'
-import { WagmiProvider } from 'wagmi'
-import { RainbowKitProvider } from '@rainbow-me/rainbowkit'
+import { PrivyProvider } from '@privy-io/react-auth'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { wagmiConfig } from '@/lib/walletConfig'
+import { WagmiProvider } from '@privy-io/wagmi'
+import { wagmiConfig } from '../lib/walletConfig'
 
 const queryClient = new QueryClient()
 
-export function WalletProviders({ children }: { children: React.ReactNode }) {
+export default function WalletProviders({ children }) {
+  const privyAppId = process.env.NEXT_PUBLIC_PRIVY_APP_ID
+
+  if (!privyAppId) {
+    console.error("Missing Privy App ID")
+    return null
+  }
+
   return (
-    <WagmiProvider config={wagmiConfig}>
+    <PrivyProvider appId={privyAppId}>
       <QueryClientProvider client={queryClient}>
-        <RainbowKitProvider>
+        <WagmiProvider config={wagmiConfig}>
           {children}
-        </RainbowKitProvider>
+        </WagmiProvider>
       </QueryClientProvider>
-    </WagmiProvider>
+    </PrivyProvider>
   )
 }

@@ -1,56 +1,59 @@
-'use client'
+'use client';
 
-import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { Button } from '@/components/ui/button'
-import { Wallet, ArrowRight, Shield, Users, Heart } from 'lucide-react'
-import { ConnectButton } from '@rainbow-me/rainbowkit'
-import { useAccount } from 'wagmi'
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { Button } from '@/components/ui/button';
+import { Shield, Users, Heart } from 'lucide-react';
+import { usePrivy, useWallets } from '@privy-io/react-auth';
 
 export default function AuthPage() {
-  const [isChecking, setIsChecking] = useState(false)
-  const [error, setError] = useState('')
-  const router = useRouter()
+  const [isChecking, setIsChecking] = useState(false);
+  const [error, setError] = useState('');
+  const router = useRouter();
 
-  const { address, isConnected } = useAccount()
+  // Auth and wallet state from Privy
+  const { ready, authenticated, login, logout } = usePrivy();
+  const { wallets } = useWallets();
 
-  const handleCheckWallet = async () => {
-    if (!isConnected || !address) {
-      setError('Please connect your wallet first.')
-      return
+  // Get first connected wallet address (if present)
+  const walletAddress = wallets && wallets.length > 0 ? wallets[0].address : undefined;
+
+  // Async wallet status check
+  const handleCheckWallet = async (address: string | undefined) => {
+    if (!address) {
+      setError('Please connect your wallet first.');
+      return;
     }
-
     try {
-      setIsChecking(true)
-      setError('')
-
+      setIsChecking(true);
+      setError('');
       const response = await fetch('/api/check-wallet', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ walletAddress: address }),
-      })
-
-      const data = await response.json()
-
-      if (!response.ok) throw new Error(data.error || 'Failed to check wallet')
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || 'Failed to check wallet');
 
       if (data.exists) {
-        router.push('/dashboard')
+        router.push('/dashboard');
       } else {
-        router.push(`/onboarding?address=${address}`)
+        router.push(`/onboarding?address=${address}`);
       }
     } catch (err: any) {
-      setError(err.message || 'Wallet check failed.')
+      setError(err.message || 'Wallet check failed.');
     } finally {
-      setIsChecking(false)
+      setIsChecking(false);
     }
-  }
+  };
 
+  // After authentication and wallet connection, trigger the wallet check
   useEffect(() => {
-    if (isConnected && address) {
-      handleCheckWallet()
+    if (authenticated && walletAddress) {
+      handleCheckWallet(walletAddress);
     }
-  }, [isConnected, address])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [authenticated, walletAddress]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-emerald-50 flex items-center justify-center p-6">
@@ -69,18 +72,41 @@ export default function AuthPage() {
             </div>
             <span className="font-bold text-2xl text-gray-900">PIF Token</span>
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Welcome Back</h1>
-          <p className="text-gray-600">Connect your wallet to join the community</p>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            Welcome Back
+          </h1>
+          <p className="text-gray-600">
+            Connect your wallet to join the community
+          </p>
         </div>
 
         {/* Main Card */}
         <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-8">
-          <div className="mb-6">
-            <ConnectButton showBalance={false} />
+          <div className="mb-6 text-center">
+            {!ready ? (
+              <div className="text-gray-500">Loading...</div>
+            ) : authenticated ? (
+              <>
+                <Button variant="outline" onClick={logout}>
+                  Disconnect Wallet
+                </Button>
+                {walletAddress && (
+                  <div className="text-xs font-mono text-gray-500 mt-2">
+                    Connected: {walletAddress.slice(0, 6)}...{walletAddress.slice(-4)}
+                  </div>
+                )}
+              </>
+            ) : (
+              <Button variant="emerald" onClick={login}>
+                Connect Wallet
+              </Button>
+            )}
           </div>
 
           {isChecking && (
-            <div className="text-center text-sm text-gray-500 mb-4">Checking wallet status...</div>
+            <div className="text-center text-sm text-gray-500 mb-4">
+              Checking wallet status...
+            </div>
           )}
 
           {error && (
@@ -111,19 +137,25 @@ export default function AuthPage() {
               <div className="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center">
                 <Shield className="w-4 h-4 text-emerald-600" />
               </div>
-              <span className="text-sm text-gray-600">Secure wallet-based authentication</span>
+              <span className="text-sm text-gray-600">
+                Secure wallet-based authentication
+              </span>
             </div>
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center">
                 <Users className="w-4 h-4 text-emerald-600" />
               </div>
-              <span className="text-sm text-gray-600">Join 8,943+ token holders</span>
+              <span className="text-sm text-gray-600">
+                Join 8,943+ token holders
+              </span>
             </div>
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center">
                 <Heart className="w-4 h-4 text-emerald-600" />
               </div>
-              <span className="text-sm text-gray-600">Vote on charitable campaigns</span>
+              <span className="text-sm text-gray-600">
+                Vote on charitable campaigns
+              </span>
             </div>
           </div>
         </div>
@@ -143,5 +175,5 @@ export default function AuthPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }
