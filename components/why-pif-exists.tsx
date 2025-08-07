@@ -49,8 +49,8 @@ export default function WhyPifExists() {
             <div>
               <h3 className="text-3xl font-bold text-gray-900 mb-4">Our Mission</h3>
               <p className="text-lg text-gray-600 leading-relaxed mb-8">
-                Every trade on PIF tokens automatically directs fees to create positive impact. We believe that
-                financial growth and social good shouldn't be separate goals.
+                Every trade using PIF tokens automatically supports causes that make a difference. 
+                We believe making money and doing good shouldn't be separate goals.
               </p>
             </div>
 
@@ -146,7 +146,7 @@ export default function WhyPifExists() {
                   }`}
                 >
                   <div className="w-3 h-3 bg-blue-500 rounded"></div>
-                  <span className="text-gray-600 text-sm font-medium">40% Token Creators</span>
+                  <span className="text-gray-600 text-sm font-medium">15% Attention</span>
                 </div>
                 <div
                   className={`flex items-center gap-3 transition-all duration-500 delay-2200 ${
@@ -154,7 +154,7 @@ export default function WhyPifExists() {
                   }`}
                 >
                   <div className="w-3 h-3 bg-emerald-500 rounded"></div>
-                  <span className="text-gray-600 text-sm font-medium">10% Influencers</span>
+                  <span className="text-gray-600 text-sm font-medium">30% Partners</span>
                 </div>
                 <div
                   className={`flex items-center gap-3 transition-all duration-500 delay-2400 ${
@@ -162,7 +162,7 @@ export default function WhyPifExists() {
                   }`}
                 >
                   <div className="w-3 h-3 bg-emerald-700 rounded"></div>
-                  <span className="text-gray-600 text-sm font-medium">50% Verified Charities</span>
+                  <span className="text-gray-600 text-sm font-medium">50%  Community & Charity</span>
                 </div>
               </div>
             </div>
@@ -183,10 +183,10 @@ export default function WhyPifExists() {
                   <Coins className="w-6 h-6 text-blue-600" />
                 </div>
                 <div>
-                  <h4 className="text-lg font-semibold text-gray-900 mb-2">Token Creator Rewards</h4>
+                  <h4 className="text-lg font-semibold text-gray-900 mb-2">Community & Charity Impact</h4>
                   <p className="text-gray-600">
-                    40% of swap fees go directly to token creators, incentivizing innovation and rewarding those who
-                    build meaningful projects in the ecosystem.
+                    50% of all fees go directly to vetted charities or community efforts, selected through transparent and inclusive processes.
+                    
                   </p>
                 </div>
               </div>
@@ -203,10 +203,9 @@ export default function WhyPifExists() {
                   <Users className="w-6 h-6 text-emerald-600" />
                 </div>
                 <div>
-                  <h4 className="text-lg font-semibold text-gray-900 mb-2">Community Building</h4>
+                  <h4 className="text-lg font-semibold text-gray-900 mb-2">Partner Support</h4>
                   <p className="text-gray-600">
-                    10% rewards influencers and community builders who help spread awareness and grow the platform's
-                    reach and impact.
+                    30% is directed to partner organizations helping grow the PIF ecosystem and deliver impact on the ground.
                   </p>
                 </div>
               </div>
@@ -223,10 +222,10 @@ export default function WhyPifExists() {
                   <Heart className="w-6 h-6 text-emerald-700" />
                 </div>
                 <div>
-                  <h4 className="text-lg font-semibold text-gray-900 mb-2">Charitable Impact</h4>
+                  <h4 className="text-lg font-semibold text-gray-900 mb-2">Attention</h4>
                   <p className="text-gray-600">
-                    50% funds vetted charities chosen by the community through democratic voting, ensuring maximum
-                    positive impact where it's needed most.
+                    15% of all fees go to Attention, the company behind PIF, 
+                    to support ongoing development, operations, and scaling of the platform.
                   </p>
                 </div>
               </div>
@@ -243,10 +242,9 @@ export default function WhyPifExists() {
                   <Shield className="w-6 h-6 text-emerald-600" />
                 </div>
                 <div>
-                  <h4 className="text-lg font-semibold text-gray-900 mb-2">Transparent Impact</h4>
+                  <h4 className="text-lg font-semibold text-gray-900 mb-2"> Emergency Fund</h4>
                   <p className="text-gray-600">
-                    All transactions are on-chain and publicly verifiable. Charity distributions happen bi-weekly once
-                    volume milestones are met, ensuring complete transparency.
+                   5% is set aside in a dedicated emergency fund to quickly respond to urgent community needs, natural disasters, or critical platform funding situations.
                   </p>
                 </div>
               </div>
