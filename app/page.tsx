@@ -38,13 +38,31 @@ export default function LandingPage() {
               Community
             </a>
           </nav>
-          <Button
-            variant="ghost"
-            className="text-gray-700 hover:text-gray-900 hover:bg-white/20 font-medium transition-colors"
-            asChild
-          >
-            <a href="/auth">Log in →</a>
-          </Button>
+        
+  {/* to fix the issue */}
+   <div className="flex flex-col space-y-2">
+  <Button
+    variant="ghost"
+    className="text-gray-700 hover:text-gray-900 hover:bg-white/20 font-medium transition-colors"
+    asChild
+  >
+    <a href="/auth"> Log in →</a>
+  </Button>
+  <Button
+  variant="ghost"
+  className="text-gray-700 hover:text-gray-900 hover:bg-white/20 font-medium transition-colors"
+  asChild
+>
+  <a href="/admin" className="flex items-center gap-1">
+    <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+      <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
+    </svg>
+    Admin Access
+  </a>
+</Button>
+
+</div>
+
         </div>
       </header>
 
