@@ -1,112 +1,363 @@
-"use client";
+import { Button } from "@/components/ui/button"
+import { Wallet, Play } from "lucide-react"
+import CampaignCarousel from "@//components/campaign-carousel"
+import FaqSection from "@//components/faq-section"
+import CommunityStats from "@//components/community-stats"
+import RealTimeDonations from "@//components/real-time-donations"
+import WhyPifExists from "@//components/why-pif-exists"
 
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Wallet, UserPlus } from "lucide-react";
-
-export default function AuthPage() {
-  const [isWalletConnected, setIsWalletConnected] = useState(false);
-  const [formData, setFormData] = useState({
-    username: "",
-    firstName: "",
-    lastName: "",
-    email: "",
-  });
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log("Submitted:", formData);
-    alert("Profile created!");
-  };
-
+export default function LandingPage() {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-[#F9FAFB] p-6">
-      {!isWalletConnected ? (
-        <div className="text-center">
-          <Wallet className="w-12 h-12 text-emerald-600 mb-4" />
-          <h1 className="text-3xl font-bold mb-2">Connect Your Wallet</h1>
-          <p className="text-gray-600 mb-6">Connect your wallet to start onboarding.</p>
+    <div className="bg-[#F9FAFB] relative overflow-hidden min-h-screen">
+      {/* Background Gradients */}
+      <div className="absolute top-[-10rem] left-[-25rem] w-[56.25rem] h-[56.25rem] bg-emerald-200/40 rounded-full filter blur-3xl opacity-50" />
+      <div className="absolute top-[60rem] right-[-30rem] w-[50rem] h-[50rem] bg-emerald-200/30 rounded-full filter blur-3xl opacity-60" />
+      <div className="absolute bottom-[5rem] left-[-20rem] w-[50rem] h-[50rem] bg-emerald-200/20 rounded-full filter blur-3xl opacity-70" />
+
+
+      {/* Header */}
+      <header className="bg-transparent relative z-10">
+        <div className="container mx-auto px-6 py-6 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 bg-emerald-500 rounded-lg flex items-center justify-center">
+              <svg className="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+              </svg>
+            </div>
+          </div>
+          <nav className="hidden md:flex items-center gap-8">
+            <a href="#campaigns" className="text-gray-700 hover:text-gray-900 font-medium transition-colors">
+              Campaigns
+            </a>
+            <a href="#governance" className="text-gray-700 hover:text-gray-900 font-medium transition-colors">
+              Governance
+            </a>
+            <a href="#about" className="text-gray-700 hover:text-gray-900 font-medium transition-colors">
+              About
+            </a>
+            <a href="#community" className="text-gray-700 hover:text-gray-900 font-medium transition-colors">
+              Community
+            </a>
+          </nav>
           <Button
-            className="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 text-lg font-medium"
-            onClick={() => setIsWalletConnected(true)}
+            variant="ghost"
+            className="text-gray-700 hover:text-gray-900 hover:bg-white/20 font-medium transition-colors"
+            asChild
           >
-            <Wallet className="w-5 h-5 mr-2" />
-            Connect Wallet
+            <a href="/auth">Log in →</a>
           </Button>
         </div>
-      ) : (
-        <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-          <div className="text-center mb-6">
-            <UserPlus className="w-10 h-10 text-emerald-600 mb-2" />
-            <h2 className="text-2xl font-bold">Complete Your Profile</h2>
-            <p className="text-gray-600">Fill in your details to finish onboarding.</p>
+      </header>
+
+
+      {/* Main Content */}
+      <main className="relative z-10">
+        <div className="container mx-auto px-6 py-16">
+          {/* Notification Banner */}
+          <div className="text-center mb-12">
+            <p className="text-gray-600 mb-2">
+              PIF Token voting starts next week.{" "}
+              <a href="#" className="text-emerald-600 hover:text-emerald-700 font-medium">
+			<br/>
+                Learn more →
+              </a>
+            </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <label htmlFor="username" className="block font-medium text-gray-700">
-              Username <span className="text-red-500">*</span>
-            </label>
-            <input
-              id="username"
-              name="username"
-              value={formData.username}
-              onChange={handleInputChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500"
-              required
-            />
 
-            <label htmlFor="firstName" className="block font-medium text-gray-700">
-              First Name <span className="text-red-500">*</span>
-            </label>
-            <input
-              id="firstName"
-              name="firstName"
-              value={formData.firstName}
-              onChange={handleInputChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500"
-              required
-            />
+          {/* Hero Section */}
+          <div className="text-center max-w-4xl mx-auto mb-24">
+            <h1 className="text-5xl md:text-7xl font-bold text-gray-900 mb-8 leading-tight">
+              Community-
+              <br />
+              Powered Crypto
+              <br />
+              Donations
+            </h1>
 
-            <label htmlFor="lastName" className="block font-medium text-gray-700">
-              Last Name <span className="text-red-500">*</span>
-            </label>
-            <input
-              id="lastName"
-              name="lastName"
-              value={formData.lastName}
-              onChange={handleInputChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500"
-              required
-            />
 
-            <label htmlFor="email" className="block font-medium text-gray-700">
-              Email <span className="text-red-500">*</span>
-            </label>
-            <input
-              id="email"
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleInputChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500"
-              required
-            />
+            <p className="text-xl text-gray-600 mb-12 max-w-2xl mx-auto leading-relaxed">
+             PIF Token is creating a transparent, decentralized funding
+              <br />
+             platform where communities take the lead.
+              <br />
+		Every two weeks, your vote decides what gets funded!
+<br />
+              Real impact, driven by you. Help shape the future of 
+             on-chain governance.
+            </p>
+</div>
 
-            <Button
-              type="submit"
-              className="w-full bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 text-lg font-medium"
-            >
-              Finish Signup
-            </Button>
-          </form>
+
+            {/* CTA Buttons */}
+            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-20">
+              <Button className="bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-3 text-lg font-medium" asChild>
+                <a href="/auth">
+                  <Wallet className="w-5 h-5 mr-2" />
+                  Connect Wallet
+                </a>
+              </Button>
+              <Button
+                variant="outline"
+                className="border-gray-300 text-gray-700 hover:bg-gray-50 px-8 py-3 text-lg font-medium bg-transparent"
+              >
+                Browse Campaigns →
+              </Button>
+            </div>
+
+
+            {/* Stats */}
+                        {/*<div className="grid grid-cols-1 md:grid-cols-3 gap-12 max-w-3xl mx-auto">
+              <div className="text-center">
+                <div className="text-3xl font-bold text-gray-900 mb-2">$2.4M USDC</div>
+                <div className="text-gray-600">Total Donated</div>
+              </div>
+              <div className="text-center">
+                <div className="text-3xl font-bold text-gray-900 mb-2">12</div>
+                <div className="text-gray-600">Active Campaigns</div>
+              </div>
+              <div className="text-center">
+                <div className="text-3xl font-bold text-gray-900 mb-2">8,943</div>
+                <div className="text-gray-600">Token Holders</div>
+              </div>
+            </div>
+          </div>*/}
+
+
+
+
+		{/* PIF Information Section */}
+          <div className="bg-[#F7F5F2] rounded-2xl p-12 lg:p-16">
+            <div className="max-w-6xl mx-auto flex flex-col lg:flex-row items-center gap-12 px-4">
+              <div className="w-full lg:w-1/2 flex justify-center lg:justify-start">
+                <img
+                  src="https://media.istockphoto.com/id/1498170916/photo/a-couple-is-taking-a-bag-of-food-at-the-food-and-clothes-bank.jpg?s=612x612&w=0&k=20&c=0fnD_g46lvoZ5NdzX5zYOSM4PzM95ezfs5uMe9D1QKs="
+                  alt="PIF for Real Impact"
+                  className="rounded-lg shadow-xl w-full max-w-md"
+                />
+              </div>
+              <div className="w-full lg:w-1/2 mt-12 lg:mt-0">
+                <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+                  PIF for Real Impact!
+                </h2>
+                <p className="text-gray-600 mb-4 text-lg">
+                  With PIF, every trade gives back. Fees return to the community, and you decide where they go.
+                  This is the first cryptocurrency built for real-world impact.
+                </p>
+                <p className="text-gray-600 text-lg">
+                  You’re not just trading—you’re changing lives.
+                  Vote every two weeks, track the campaigns, and see your support in action. Your voice drives real change!
+                </p>
+              </div>
+            </div>
+          </div>
+
+
+
+
+
+          {/* Impact Section */}
+          <section className="py-24 sm:py-32">
+            <div className="bg-[#F7F5F2] rounded-2xl p-12 lg:p-16">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                <div className="lg:pr-8">
+                  <h2 className="text-base font-semibold leading-7 text-emerald-600">Real-World Impact</h2>
+                  <p className="mt-2 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
+                    Building Hope, One Home at a Time
+                  </p>
+                  <p className="mt-6 text-lg leading-8 text-gray-600">
+                    Witness the impact of your contributions as they uplift lives and strengthen communities. Each donation builds more than just a home—it lays the foundation for a brighter tomorrow.                  </p>
+                  <div className="mt-8">
+                    
+                  </div>
+                </div>
+                <div className="relative rounded-2xl overflow-hidden shadow-xl ring-1 ring-gray-900/10">
+                  <div className="aspect-video bg-gray-900 flex items-center justify-center relative">
+                    <img
+                      src="/placeholder.svg?height=600&width=1000"
+                      alt="Building Hope: Rural Housing Initiative"
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-black/20"></div>
+                    <button className="absolute inset-0 flex items-center justify-center group">
+                      <div className="w-20 h-20 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center group-hover:bg-white/30 transition-colors">
+                        <Play className="w-8 h-8 text-white ml-1" />
+                      </div>
+                    </button>
+                    <div className="absolute bottom-6 left-6 flex items-center gap-3 text-white">
+                      <div className="w-2 h-2 bg-white rounded-full"></div>
+                      <span className="font-medium">Building Hope: Rural Housing Initiative</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+
+          {/* Active Voting Round Section */}
+          <section className="py-24 sm:py-32">
+            <div className="mx-auto max-w-2xl lg:max-w-none">
+              <div className="text-center">
+                <h2 className="text-base font-semibold leading-7 text-emerald-600">Community Governance</h2>
+                <p className="mt-2 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">Active Voting Round</p>
+                <p className="mt-6 text-lg leading-8 text-gray-600">
+                  Your vote matters. Use your PIF tokens to support the causes you believe in.
+                </p>
+              </div>
+
+              <div className="mt-12 bg-white border border-gray-200 rounded-xl p-6 flex flex-col md:flex-row items-center justify-between gap-6">
+                <div className="text-center md:text-left">
+                  <p className="text-sm text-gray-600">No active voting round as of now</p>
+                  <p className="text-sm font-bold text-gray-600">Staring soon..</p>
+                </div>
+                <div className="w-full md:w-px h-px md:h-12 bg-gray-200"></div>
+                <div className="text-center md:text-left">
+                  <p className="text-sm text-gray-600">Your available voting power:</p>
+                  <p className="text-2xl font-bold text-emerald-600">0 PIF</p>
+                </div>
+                <div className="w-full md:w-auto">
+                  <Button className="w-full bg-emerald-600 hover:bg-emerald-700 text-white" asChild>
+                    <a href="/auth">Connect Wallet to Participate</a>
+                  </Button>
+                </div>
+              </div>
+
+              <CampaignCarousel />
+            </div>
+          </section>
         </div>
-      )}
-    </div>
-  );
-}
 
+        <CommunityStats />
+        <RealTimeDonations />
+        <WhyPifExists />
+
+        {/* CTA Section */}
+        <section className="bg-emerald-950">
+          <div className="container mx-auto px-6 py-24 sm:py-32 text-center">
+            <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
+              Join forces with a growing community of changemakers. 
+
+              <br />
+              Together, we fund what matters.
+            </h2>
+            <div className="mt-10 flex items-center justify-center gap-x-6">
+              <Button className="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 text-base font-medium" asChild>
+                <a href="/partner/apply">Become a Partner</a>
+              </Button>
+             
+            </div>
+          </div>
+        </section>
+
+        <FaqSection />
+      </main>
+
+      {/* Footer and PIF background container */}
+      <div className="bg-white relative">
+        <footer className="border-t border-gray-200 py-16 relative z-10">
+          <div className="container mx-auto px-6">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
+              <div className="md:col-span-1">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-10 h-10 bg-emerald-500 rounded-lg flex items-center justify-center">
+                    <span className="text-white font-bold">P</span>
+                  </div>
+                  <span className="font-bold text-xl text-gray-900">PIF Token</span>
+                </div>
+                <p className="text-gray-600 leading-relaxed mb-8">
+                  Empowering communities through decentralized philanthropy. PIF Token enables transparent, democratic
+                  funding for causes that matter most.
+                </p>
+                <p className="text-gray-500 text-sm">© copyright PIF Token 2024. All rights reserved.</p>
+              </div>
+
+              <div>
+                <h4 className="font-semibold text-gray-900 mb-6">Platform</h4>
+                <ul className="space-y-4 text-gray-600">
+                  <li>
+                    <a href="#" className="hover:text-gray-900">
+                      Browse Campaigns
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#" className="hover:text-gray-900">
+                      Voting History
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#" className="hover:text-gray-900">
+                      Impact Reports
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#" className="hover:text-gray-900">
+                      Token Economics
+                    </a>
+                  </li>
+                </ul>
+              </div>
+
+              <div>
+                <h4 className="font-semibold text-gray-900 mb-6">Community</h4>
+                <ul className="space-y-4 text-gray-600">
+                  <li>
+                    <a href="#" className="hover:text-gray-900">
+                      Leaderboard
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#" className="hover:text-gray-900">
+                      Discord
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#" className="hover:text-gray-900">
+                      Twitter
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#" className="hover:text-gray-900">
+                      Documentation
+                    </a>
+                  </li>
+                </ul>
+              </div>
+
+              <div>
+                <h4 className="font-semibold text-gray-900 mb-6">Partners</h4>
+                <ul className="space-y-4 text-gray-600">
+                  <li>
+                    <a href="/partner/apply" className="hover:text-gray-900">
+                      Become a Partner
+                    </a>
+                  </li>
+                  <li>
+                    <a href="/partner/apply" className="hover:text-gray-900">
+                      Submit Proposal
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#" className="hover:text-gray-900">
+                      Admin Portal
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#" className="hover:text-gray-900">
+                      Support
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </footer>
+
+        {/* Gradient PIF Letters Section */}
+        <div className="text-center pt-4 pb-16 pointer-events-none">
+          <div className="text-[20rem] font-black text-gray-200 select-none whitespace-nowrap">PIF</div>
+        </div>
+      </div>
+    </div>
+  )
+}
